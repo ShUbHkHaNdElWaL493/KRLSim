@@ -1,0 +1,49 @@
+services:
+  krlsim-cpu-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cpu
+      target: dev
+    image: krlsim-cpu-dev:latest
+    container_name: krlsim-cpu-dev
+    network_mode: host
+    ipc: host
+    environment:
+      - DISPLAY=${DISPLAY:-}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-/tmp/.Xauthority}:/root/.Xauthority
+      - ./:/krlsim
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+  krlsim-gpu-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gpu
+      target: dev
+    image: krlsim-gpu-dev:latest
+    container_name: krlsim-gpu-dev
+    network_mode: host
+    ipc: host
+    environment:
+      - DISPLAY=${DISPLAY:-}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-/tmp/.Xauthority}:/root/.Xauthority
+      - ./:/krlsim
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
