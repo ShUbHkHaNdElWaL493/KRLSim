@@ -24,7 +24,7 @@ flowchart TD
         Cache["<b>Immutable Cache</b><br/>- Kinematic Tree Specs<br/>- Mesh BVH / Primitives"]
         Math["<b>Math Core (Eigen3 SIMD)</b><br/>- Forward Kinematics Pipeline<br/>- Analytical/Geometric Jacobians"]
         
-        Collision["<b>Collision Pipeline (hpp-fcl)</b><br/>- Broad-phase BVH Pruning<br/>- GJK/EPA Narrow Phase<br/>- Continuous Signed Distance"]
+        Collision["<b>Collision Pipeline (coal)</b><br/>- Broad-phase BVH Pruning<br/>- GJK/EPA Narrow Phase<br/>- Continuous Signed Distance"]
 
         Parser --> Cache
         State --> Math
@@ -65,11 +65,11 @@ flowchart TD
     $$V = J(q)\dot{q}$$
     * All internal Eigen types use 16/32-byte memory alignment (`Eigen::aligned_allocator`) to maximize AVX-256/AVX-512 SIMD vectorization during vectorized stepping loops.
 
-### 2.3 Geometry & Collision Pipeline (`hpp-fcl`)
+### 2.3 Geometry & Collision Pipeline (`coal`)
 
 * **Role:** High-speed distance checking, obstacle clearance estimation, and contact detection.
 * **Responsibilities:**
-    * Instantiate persistent `hpp::fcl::CollisionGeometry` representations for all immutable collision bodies (boxes, cylinders, spheres, convex mesh hulls).
+    * Instantiate persistent `coal::CollisionGeometry` representations for all immutable collision bodies (boxes, cylinders, spheres, convex mesh hulls).
     * Build and maintain dynamic Bounding Volume Hierarchies (BVH trees, such as AABB and OBB) to accelerate broad-phase pruning.
     * Execute narrow-phase checks via optimized GJK (Gilbert-Johnson-Keerthi) and EPA (Expanding Polytope Algorithm) solvers:
 * **Boolean Collision:** Early-exit flags indicating self-collision or environment collision.
@@ -102,7 +102,7 @@ The system uses a decoupled dual-container configuration managed by Docker Compo
 
 * **Base Image:** `ubuntu:22.04`
 * **Toolchain:** `gcc-12`, `g++-12`, `cmake`, `ninja-build`
-* **Dependencies:** Pre-compiled `libeigen3-dev`, `liburdfdom-dev`, `hpp-fcl`, Python 3.10+ development headers, and PyTorch (CPU variant).
+* **Dependencies:** Pre-compiled `libeigen3-dev`, `liburdfdom-dev`, `coal`, Python 3.10+ development headers, and PyTorch (CPU variant).
 * **Compiler Flags:** `-O3 -march=native -mavx2 -mfma -fopenmp -DNDEBUG`
 
 ### 3.2 GPU Runtime (`Dockerfile.gpu`)
@@ -129,8 +129,6 @@ kinematic-sim/
 │   ├── robots/
 │   │   └── manipulator.urdf
 │   └── meshes/
-├── cmake/                       # CMake helper modules
-│   └── FindHPPFCL.cmake
 ├── docker/
 │   ├── Dockerfile.cpu
 │   └── Dockerfile.gpu
@@ -144,7 +142,7 @@ kinematic-sim/
 │       ├── parser/
 │       │   └── urdf_loader.hpp  # urdfdom parsing utilities
 │       ├── collision/
-│       │   └── collision_engine.hpp # hpp-fcl context and queries
+│       │   └── collision_engine.hpp # coal context and queries
 │       └── engine.hpp           # Main simulation batch coordinator
 ├── src/                         # C++ Implementation Files
 │   ├── core/
@@ -182,7 +180,7 @@ kinematic-sim/
     * Contiguous arrays within `EnTT` update in place.
 4. **Vectorized Forward Kinematics:** Recursive transformation updates compute link poses $T_i$ across all entities using SIMD vector pipelines.
 5. **Collision & Distance Queries:**
-    * Updated transformations populate `hpp::fcl::Transform3f` instances.
+    * Updated transformations populate `coal::Transform3s` instances.
     * Broad-phase checks eliminate distant link-obstacle pairs.
     * Narrow-phase solvers compute exact clearances and collision booleans.
 6. **Observation Tensor Return:** Memory pointers referencing the updated positions, end-effector poses, and obstacle clearances wrap into DLPack tensors and return directly to PyTorch without memory reallocation.

@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     python3-pip \
     python3-venv \
+    liburdfdom-dev \
+    libentt-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /etc/apt/keyrings && \
@@ -27,8 +29,7 @@ RUN mkdir -p /etc/apt/keyrings && \
 
 RUN apt-get update && apt-get install -y \
     robotpkg-eigen3 \
-    robotpkg-py312-coal \
-    robotpkg-py312-pinocchio \
+    robotpkg-coal \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/opt/openrobots/bin:$PATH
@@ -48,34 +49,41 @@ RUN pip install --no-cache-dir --upgrade pip && \
 WORKDIR /krlsim
 
 # ==========================================
+# Builder Stage
+# ==========================================
+FROM base AS builder
+COPY . /krlsim/
+RUN pip install --no-cache-dir .
+
+# ==========================================
 # Development Stage
 # ==========================================
 FROM base AS dev
 CMD ["/bin/bash"]
 
-# ==========================================
-# Production Stage
-# ==========================================
-FROM ubuntu:24.04 AS production
+# # ==========================================
+# # Production Stage
+# # ==========================================
+# FROM ubuntu:24.04 AS production
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV PYTHONUNBUFFERED=1
+# ENV DEBIAN_FRONTEND=noninteractive
+# ENV PYTHONUNBUFFERED=1
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 \
-    libgomp1 \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     python3 \
+#     libgomp1 \
+#     liburdfdom-dev \
+#     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /opt/openrobots /opt/openrobots
-COPY --from=builder /opt/venv /opt/venv
-COPY --from=builder /krlsim /krlsim
+# COPY --from=builder /opt/openrobots /opt/openrobots
+# COPY --from=builder /opt/venv /opt/venv
+# COPY --from=builder /krlsim /krlsim
 
-ENV PATH=/opt/openrobots/bin:$PATH
-ENV PKG_CONFIG_PATH=/opt/openrobots/lib/pkgconfig:$PKG_CONFIG_PATH
-ENV LD_LIBRARY_PATH=/opt/openrobots/lib:$LD_LIBRARY_PATH
-ENV PYTHONPATH=/opt/openrobots/lib/python3.12/site-packages:$PYTHONPATH
-ENV CMAKE_PREFIX_PATH=/opt/openrobots:$CMAKE_PREFIX_PATH
-ENV PATH="/opt/venv/bin:$PATH"
+# ENV PATH=/opt/openrobots/bin:$PATH
+# ENV PKG_CONFIG_PATH=/opt/openrobots/lib/pkgconfig:$PKG_CONFIG_PATH
+# ENV LD_LIBRARY_PATH=/opt/openrobots/lib:$LD_LIBRARY_PATH
+# ENV CMAKE_PREFIX_PATH=/opt/openrobots:$CMAKE_PREFIX_PATH
+# ENV PATH="/opt/venv/bin:$PATH"
 
-WORKDIR /krlsim
-CMD ["pytest", "tests/python/"]
+# WORKDIR /krlsim
+# CMD ["pytest", "tests/python/"]
