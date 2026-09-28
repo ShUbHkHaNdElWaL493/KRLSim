@@ -23,26 +23,17 @@ namespace krlsim
         Scalar upper = 0.0;
         Scalar velocity = 0.0;
         Scalar effort = 0.0;
-        bool has_position_limits = false;
-        bool has_velocity_limits = false;
     };
 
     struct JointDescriptor
     {
-        int joint_idx;
+        int joint_index;
         std::string name;
-
-        Isometry3 origin;
-        Vector3 axis;
-
         JointType type;
-
-        int parent_link_idx;
-        int child_link_idx;
-
-        int q_idx;
-        int v_idx;
-
+        Isometry3 origin;
+        int parent_link_index;
+        int child_link_index;
+        Vector3 axis;
         JointLimits limits;
     };
 }

@@ -5,18 +5,18 @@
 
 namespace krlsim
 {
-    struct KinematicsModel
+    class KinematicsModel
     {
-        std::string name;
 
-        int n_dof = 0;
-        int n_q = 0;   // Size of the position vector q
-        int n_v = 0;   // Size of the velocity vector v
+        private:
+            std::string name;
+            std::vector<JointDescriptor> joints;
+            std::vector<LinkDescriptor> links;
 
-        int root_link_idx = -1;
+        public:
+            KinematicsModel(std::string name);
+            void parseJSON();
+            void parseURDF();
 
-        std::vector<LinkDescriptor> links;
-        std::vector<JointDescriptor> joints;
-        std::vector<int> active_joint_indices; 
     };
 }
