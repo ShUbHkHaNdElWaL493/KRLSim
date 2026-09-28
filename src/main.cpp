@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "core/kinematics_model.hpp"
+#include "core/model.hpp"
 #include "logger/logger.hpp"
 
 int main()

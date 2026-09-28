@@ -5,7 +5,7 @@
 
 namespace krlsim
 {
-    class KinematicsModel
+    class Model
     {
 
         private:
@@ -14,7 +14,7 @@ namespace krlsim
             std::vector<LinkDescriptor> links;
 
         public:
-            KinematicsModel(std::string name);
+            Model(std::string name);
             void parseJSON();
             void parseURDF();
 
