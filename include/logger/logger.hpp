@@ -22,7 +22,7 @@ namespace krlsim
             std::string logTypeToString(LogType log_type);
 
         public:
-            Logger(LogType log_type);
+            Logger(LogType log_type = LogType::LOG);
             void log(LogType log_type, std::string message);
 
     };

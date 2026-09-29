@@ -12,7 +12,5 @@ namespace krlsim
     using MatrixX = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
     using Isometry3 = Eigen::Transform<Scalar, 3, Eigen::Isometry>;
-    using Color = Eigen::Matrix<Scalar, 4, 1>;
-
     using JacobianMatrix = Eigen::Matrix<Scalar, 6, Eigen::Dynamic>;
 }

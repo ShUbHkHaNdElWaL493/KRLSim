@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.24)
 project(krlsim LANGUAGES CXX)
 
+option(BUILD_TESTING "Build the tests for KRLSim" ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -10,10 +12,45 @@ find_package(coal REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(urdfdom REQUIRED)
 
-add_executable(
-    ${PROJECT_NAME}
-    ${CMAKE_SOURCE_DIR}/src/main.cpp
+add_library(
+    krlsim_logger
     ${CMAKE_SOURCE_DIR}/src/logger/logger.cpp
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(
+    krlsim_logger
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+add_library(
+    krlsim_model
+    ${CMAKE_SOURCE_DIR}/src/model/model.cpp
+)
+target_link_libraries(
+    krlsim_model
+    PUBLIC
+    Eigen3::Eigen
+    ${urdfdom_LIBRARIES}
+)
+target_include_directories(
+    krlsim_model
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+    ${urdfdom_INCLUDE_DIRS}
+)
+
+# add_executable(
+#     ${PROJECT_NAME}
+#     ${CMAKE_SOURCE_DIR}/src/main.cpp
+# )
+# target_link_libraries(
+#     ${PROJECT_NAME}
+#     PUBLIC
+#     krlsim_logger
+#     krlsim_model
+# )
+
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(tests/cpp)
+endif()

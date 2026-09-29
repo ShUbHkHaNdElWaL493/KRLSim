@@ -14,7 +14,6 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ${XAUTHORITY:-/tmp/.Xauthority}:/root/.Xauthority
-      - ./:/krlsim
     stdin_open: true
     tty: true
     command: /bin/bash
@@ -36,7 +35,6 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ${XAUTHORITY:-/tmp/.Xauthority}:/root/.Xauthority
-      - ./:/krlsim
     stdin_open: true
     tty: true
     command: /bin/bash

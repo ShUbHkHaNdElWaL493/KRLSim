@@ -21,7 +21,7 @@ namespace krlsim
 
     struct LinkDescriptor
     {
-        int link_idx;
+        int link_index;
         std::string name;
         Isometry3 origin;
         std::vector<CollisionGeometry> collisions;

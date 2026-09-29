@@ -47,7 +47,7 @@ namespace krlsim
         }
     }
 
-    Logger::Logger(LogType log_type = LogType::LOG)
+    Logger::Logger(LogType log_type)
     {
         switch (log_type)
         {
@@ -72,7 +72,7 @@ namespace krlsim
     {
         if (this->checkPriority(log_type))
         {
-            std::cout << "[" << this->logTypeToString(log_type) << "]: " << message << std::endl;
+            std::cout << "[" << this->logTypeToString(log_type) << "] " << message << std::endl;
         }
     }
 
