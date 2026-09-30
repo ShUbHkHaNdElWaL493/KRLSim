@@ -4,7 +4,7 @@
 #include <variant>
 #include <vector>
 
-#include "types.hpp"
+#include "core/types.hpp"
 
 namespace krlsim
 {

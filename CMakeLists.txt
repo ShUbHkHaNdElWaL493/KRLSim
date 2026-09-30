@@ -13,11 +13,16 @@ find_package(Eigen3 REQUIRED)
 find_package(urdfdom REQUIRED)
 
 add_library(
-    krlsim_logger
-    ${CMAKE_SOURCE_DIR}/src/logger/logger.cpp
+    krlsim_core
+    ${CMAKE_SOURCE_DIR}/src/core/logger.cpp
+)
+target_link_libraries(
+    krlsim_core
+    PUBLIC
+    Eigen3::Eigen
 )
 target_include_directories(
-    krlsim_logger
+    krlsim_core
     PUBLIC
     ${CMAKE_SOURCE_DIR}/include
 )
@@ -29,7 +34,7 @@ add_library(
 target_link_libraries(
     krlsim_model
     PUBLIC
-    Eigen3::Eigen
+    krlsim_core
     ${urdfdom_LIBRARIES}
 )
 target_include_directories(

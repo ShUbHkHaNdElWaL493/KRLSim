@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "logger/logger.hpp"
+#include "core/logger.hpp"
 
 namespace krlsim
 {
 
-    bool Logger::checkPriority(LogType log_type)
+    bool Logger::checkPriority(const LogType& log_type)
     {
         switch (log_type)
         {
@@ -26,7 +26,7 @@ namespace krlsim
         }
     }
 
-    std::string Logger::logTypeToString(LogType log_type)
+    std::string Logger::logTypeToString(const LogType& log_type)
     {
         switch (log_type)
         {
@@ -47,7 +47,7 @@ namespace krlsim
         }
     }
 
-    Logger::Logger(LogType log_type)
+    Logger::Logger(const LogType& log_type)
     {
         switch (log_type)
         {
@@ -68,7 +68,7 @@ namespace krlsim
         }
     }
 
-    void Logger::log(LogType log_type, std::string message)
+    void Logger::log(const LogType& log_type, const std::string& message)
     {
         if (this->checkPriority(log_type))
         {

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+
+#include "core/logger.hpp"
 #include "joint.hpp"
 #include "link.hpp"
 
@@ -9,15 +12,16 @@ namespace krlsim
     {
 
         private:
+            std::shared_ptr<Logger> logger;
             std::string name;
-            size_t n_q, n_v;
             std::vector<JointDescriptor> joints;
             std::vector<LinkDescriptor> links;
 
         public:
-            Model(std::string name);
-            ReturnType parseRobotDescription(const std::string& robot_description);
-            ReturnType parseURDF(const std::string& urdf_file_path);
+            Model(const std::string& name = "robot", std::shared_ptr<Logger> logger = nullptr);
+            void parseRobotDescription(const std::string& robot_description);
+            void parseURDF(const std::string& urdf_file_path);
+            std::string toJSON();
 
     };
 }

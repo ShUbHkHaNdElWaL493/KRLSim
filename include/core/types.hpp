@@ -5,8 +5,6 @@
 
 namespace krlsim
 {
-    using ReturnType = std::pair<bool, std::string>;
-
     using Scalar = double;
     using Vector3 = Eigen::Matrix<Scalar, 3, 1>;
     using Matrix3 = Eigen::Matrix<Scalar, 3, 3>;
@@ -15,4 +13,12 @@ namespace krlsim
 
     using Isometry3 = Eigen::Transform<Scalar, 3, Eigen::Isometry>;
     using JacobianMatrix = Eigen::Matrix<Scalar, 6, Eigen::Dynamic>;
+
+    enum class LogType
+    {
+        ERROR,
+        WARNING,
+        LOG,
+        DEBUG
+    };
 }

@@ -15,7 +15,7 @@ namespace krlsim
         return out;
     }
 
-    static JointType joint_to_enum(int type)
+    static JointType joint_to_enum(const int& type)
     {
         switch (type)
         {
@@ -29,17 +29,17 @@ namespace krlsim
         }
     }
 
-    Model::Model(std::string name) : name(name), n_q(0), n_v(0)
+    Model::Model(const std::string& name, std::shared_ptr<Logger> logger) : name(name), logger(std::move(logger))
     {}
 
-    ReturnType Model::parseRobotDescription(const std::string& robot_description)
+    void Model::parseRobotDescription(const std::string& robot_description)
     {
 
         auto urdf_model = urdf::parseURDF(robot_description);
-        if (!urdf_model) return {false, "Failed to parse robot description."};
+        if (!urdf_model) { logger->log(LogType::ERROR, "Failed to parse robot description."); return; }
         
         auto root_link = urdf_model->getRoot();
-        if (!root_link) return {false, "Robot description has no root link."};
+        if (!root_link) { logger->log(LogType::ERROR, "Robot description has no root link."); return; }
 
         links.clear();
         joints.clear();
@@ -109,20 +109,51 @@ namespace krlsim
         };
 
         process_link(process_link, root_link, -1, nullptr);
-        return {true, "Robot description parsed successfully."};
+        logger->log(LogType::LOG, "Robot description parsed successfully.");
     }
 
-    ReturnType Model::parseURDF(const std::string& urdf_file_path)
+    void Model::parseURDF(const std::string& urdf_file_path)
     {
         auto urdf_model = urdf::parseURDFFile(urdf_file_path);
-        if (!urdf_model) return {false, "Failed to parse URDF file: " + urdf_file_path};
+        if (!urdf_model) { logger->log(LogType::ERROR, "Failed to parse URDF file: " + urdf_file_path); return; }
         
-        std::ifstream ifs(urdf_file_path);
-        if (!ifs.is_open()) return {false, "Failed to open URDF file: " + urdf_file_path};
-        std::string robot_description((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+        std::ifstream urdf_file(urdf_file_path);
+        if (!urdf_file.is_open()) { logger->log(LogType::ERROR, "Failed to open URDF file: " + urdf_file_path); return; }
+        std::string robot_description((std::istreambuf_iterator<char>(urdf_file)), std::istreambuf_iterator<char>());
         
         parseRobotDescription(robot_description);
-        return {true, "URDF file parsed successfully."};
+        logger->log(LogType::LOG, "URDF file parsed successfully.");
+    }
+
+    std::string Model::toJSON()
+    {
+        if (links.empty() && joints.empty()) { logger->log(LogType::WARNING, "Robot model not loaded."); return ""; }
+
+        std::stringstream ss;
+        ss << "{\n";
+        ss << "\tname: " << name << ",\n";
+        ss << "\tlinks: [\n";
+        for (LinkDescriptor link_descriptor : links)
+        {
+            ss << "\t\t{\n";
+            ss << "\t\t\tlink_index: " << link_descriptor.link_index << ",\n";
+            ss << "\t\t\tname: " << link_descriptor.name << "\n";
+            ss << "\t\t},\n";
+        }
+        ss << "\t],\n";
+        ss << "\tjoints: [\n";
+        for (JointDescriptor joint_descriptor : joints)
+        {
+            ss << "\t\t{\n";
+            ss << "\t\t\tjoint_index: " << joint_descriptor.joint_index << ",\n";
+            ss << "\t\t\tname: " << joint_descriptor.name << "\n";
+            ss << "\t\t},\n";
+        }
+        ss << "\t]\n";
+        ss << "}";
+
+        logger->log(LogType::DEBUG, "Model description (JSON):\n" + ss.str());
+        return ss.str();
     }
 
 }

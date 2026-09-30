@@ -4,6 +4,5 @@ add_executable(check_urdf check_urdf.cpp)
 target_link_libraries(
     check_urdf
     PUBLIC
-    krlsim_logger
     krlsim_model
 )

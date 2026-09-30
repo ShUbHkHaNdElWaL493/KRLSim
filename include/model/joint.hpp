@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "types.hpp"
+#include "core/types.hpp"
 
 namespace krlsim
 {
