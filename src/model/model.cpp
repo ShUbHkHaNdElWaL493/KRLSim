@@ -32,7 +32,7 @@ namespace krlsim
     Model::Model(std::string name) : name(name), n_q(0), n_v(0)
     {}
 
-    std::pair<bool, std::string> Model::parseRobotDescription(const std::string& robot_description)
+    ReturnType Model::parseRobotDescription(const std::string& robot_description)
     {
 
         auto urdf_model = urdf::parseURDF(robot_description);
@@ -112,7 +112,7 @@ namespace krlsim
         return {true, "Robot description parsed successfully."};
     }
 
-    std::pair<bool, std::string> Model::parseURDF(const std::string& urdf_file_path)
+    ReturnType Model::parseURDF(const std::string& urdf_file_path)
     {
         auto urdf_model = urdf::parseURDFFile(urdf_file_path);
         if (!urdf_model) return {false, "Failed to parse URDF file: " + urdf_file_path};

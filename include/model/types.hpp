@@ -5,6 +5,8 @@
 
 namespace krlsim
 {
+    using ReturnType = std::pair<bool, std::string>;
+
     using Scalar = double;
     using Vector3 = Eigen::Matrix<Scalar, 3, 1>;
     using Matrix3 = Eigen::Matrix<Scalar, 3, 3>;

@@ -16,8 +16,8 @@ namespace krlsim
 
         public:
             Model(std::string name);
-            std::pair<bool, std::string> parseRobotDescription(const std::string& robot_description);
-            std::pair<bool, std::string> parseURDF(const std::string& urdf_file_path);
+            ReturnType parseRobotDescription(const std::string& robot_description);
+            ReturnType parseURDF(const std::string& urdf_file_path);
 
     };
 }

@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     } else
     {
         Model model("robot");
-        std::pair<bool, std::string> result = model.parseURDF(argv[1]);
+        ReturnType result = model.parseURDF(argv[1]);
         if (result.first)
         {
             logger.log(LogType::LOG, result.second);
