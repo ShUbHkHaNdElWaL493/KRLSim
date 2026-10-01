@@ -6,16 +6,16 @@ using namespace krlsim;
 
 int main(int argc, char **argv)
 {
+    std::shared_ptr<Logger> logger = std::make_shared<Logger>(LogType::LOG);
     if (argc != 2)
     {
-        Logger logger;
-        logger.log(LogType::ERROR, "Usage: ./check_urdf ${URDF_FILE_PATH}");
+        logger->log(LogType::ERROR, "Usage: ./check_urdf ${URDF_FILE_PATH}");
         return 1;
     } else
     {
-        Model model("robot", std::make_shared<Logger>());
+        Model model("robot", logger);
         model.parseURDF(argv[1]);
-        std::string model_json = model.toJSON();
+        model.visualize();
         return 0;
     }
 

@@ -5,28 +5,36 @@
 namespace krlsim
 {
 
-    bool Logger::checkPriority(const LogType& log_type)
+    bool Logger::checkPriority(const LogType& log_type) const
     {
         switch (log_type)
         {
             case LogType::ERROR:
-                return this->log_priority >= 1;
-                break;
+                return (this->log_priority == LogType::ERROR);
             case LogType::WARNING:
-                return this->log_priority >= 2;
-                break;
+                return (
+                    (this->log_priority == LogType::ERROR) ||
+                    (this->log_priority == LogType::WARNING)
+                );
             case LogType::LOG:
-                return this->log_priority >= 3;
-                break;
+                return (
+                    (this->log_priority == LogType::ERROR) ||
+                    (this->log_priority == LogType::WARNING) ||
+                    (this->log_priority == LogType::LOG)
+                );
             case LogType::DEBUG:
-                return this->log_priority >= 4;
-                break;
+                return (
+                    (this->log_priority == LogType::ERROR) ||
+                    (this->log_priority == LogType::WARNING) ||
+                    (this->log_priority == LogType::LOG) ||
+                    (this->log_priority == LogType::DEBUG)
+                );
             default:
-                return this->log_priority >= 0;
+                return false;
         }
     }
 
-    std::string Logger::logTypeToString(const LogType& log_type)
+    std::string Logger::logTypeToString(const LogType& log_type) const
     {
         switch (log_type)
         {
@@ -47,28 +55,11 @@ namespace krlsim
         }
     }
 
-    Logger::Logger(const LogType& log_type)
-    {
-        switch (log_type)
-        {
-            case LogType::ERROR:
-                this->log_priority = 1;
-                break;
-            case LogType::WARNING:
-                this->log_priority = 2;
-                break;
-            case LogType::LOG:
-                this->log_priority = 3;
-                break;
-            case LogType::DEBUG:
-                this->log_priority = 4;
-                break;
-            default:
-                this->log_priority = 0;
-        }
-    }
+    Logger::Logger(const LogType& log_priority) : log_priority(log_priority) {}
 
-    void Logger::log(const LogType& log_type, const std::string& message)
+    LogType Logger::getPriority() const { return log_priority; }
+
+    void Logger::log(const LogType& log_type, const std::string& message) const
     {
         if (this->checkPriority(log_type))
         {

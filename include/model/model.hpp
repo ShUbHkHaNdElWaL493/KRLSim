@@ -21,7 +21,7 @@ namespace krlsim
             Model(const std::string& name = "robot", std::shared_ptr<Logger> logger = nullptr);
             void parseRobotDescription(const std::string& robot_description);
             void parseURDF(const std::string& urdf_file_path);
-            std::string toJSON();
+            void visualize(const std::string& prefix = "") const;
 
     };
 }

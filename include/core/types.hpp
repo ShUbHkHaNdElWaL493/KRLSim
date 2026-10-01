@@ -13,12 +13,4 @@ namespace krlsim
 
     using Isometry3 = Eigen::Transform<Scalar, 3, Eigen::Isometry>;
     using JacobianMatrix = Eigen::Matrix<Scalar, 6, Eigen::Dynamic>;
-
-    enum class LogType
-    {
-        ERROR,
-        WARNING,
-        LOG,
-        DEBUG
-    };
 }
